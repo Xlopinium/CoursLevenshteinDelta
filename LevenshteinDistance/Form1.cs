@@ -63,6 +63,15 @@ namespace LevenshteinDistance
                     matrix[i, j] = Math.Min(Math.Min(matrix[i - 1, j] + 1, matrix[i, j - 1] + 1), matrix[i - 1, j - 1] + cost);
                 }
             }
+            //trying to make an egg
+            //if (str1.ToLower() == "нтирандекура")
+            //{
+            //    distanceLabel.Text = "The creator";
+           // }
+           // else
+           // {
+           //     distanceLabel.Text = "";
+           // }
 
             return matrix[str1.Length, str2.Length];
         }
@@ -82,6 +91,13 @@ namespace LevenshteinDistance
 
             // Place Label location regarding of TextBox2
             distanceLabel.Location = new Point(secondStringTextBox.Location.X, secondStringTextBox.Location.Y + secondStringTextBox.Height + 10);
+        }
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                CalculateButton_Click(sender, e);
+            }
         }
 
         private List<string> GetLevenshteinOperations(string str1, string str2)
