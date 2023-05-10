@@ -8,16 +8,80 @@ using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DotnetNoise;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace LevenshteinDistance
 {
-
     public partial class Form1 : Form
     {
         public Form1()
         {
             InitializeComponent();
+        }
+        //trying realese perlinnoise on backgrond
+        public class PerlinNoiseTexture
+        {
+            public static System.Drawing.Bitmap GenerateTexture(int width, int height)
+            {
+                System.Drawing.Color color1 = System.Drawing.Color.FromArgb(227, 229, 252);
+                System.Drawing.Color color2 = System.Drawing.Color.FromArgb(252, 247, 227);
+                FastNoise dotnetNoise = new FastNoise();
+                //SetNoiseType Default: OpenSimplex2
+                //Frequncy Default 0.01 sorce: documtation
+
+                System.Drawing.Bitmap texture = new System.Drawing.Bitmap(width, height);
+
+                for (int y = 0; y < height; y++)
+                {
+                    for (int x = 0; x < width; x++)
+                    {
+                        float noiseValue = dotnetNoise.GetNoise(x, y);
+                        int colorValue;
+
+                        if (noiseValue < -0.5f)
+                        {
+                            colorValue = (int)(255 * (1 - (noiseValue + 0.2f) / 0.2f));
+                            if (colorValue < 0) colorValue = 0;
+                        }
+                        else if (noiseValue < 0.2f)
+                        {
+                            colorValue = 122;
+                        }
+                        else
+                        {
+                            colorValue = (int)(180 * (1 - (noiseValue - 0.2f) / 0.8f));
+                            if (colorValue < 0) colorValue = 0;
+                        }
+
+                        System.Drawing.Color color;
+
+                        if (x < width / 2) // first half of texture
+                        {
+                            float t = (float)x / (width / 2);
+                            int r = (int)(color1.R * (1 - t) + color2.R * t);
+                            int g = (int)(color1.G * (1 - t) + color2.G * t);
+                            int b = (int)(color1.B * (1 - t) + color2.B * t);
+                            color = System.Drawing.Color.FromArgb(r, g, b);
+                        }
+                        else // second half of texture
+                        {
+                            // calculate t as the relative position of the current pixel in the second half of the texture
+                            float t = (float)(x - (width / 2)) / (width / 2);
+
+                            // interpolate between color2 and color1 based on t
+                            int r = (int)(color2.R * (1 - t) + color1.R * t);
+                            int g = (int)(color2.G * (1 - t) + color1.G * t);
+                            int b = (int)(color2.B * (1 - t) + color1.B * t);
+                            color = System.Drawing.Color.FromArgb(r, g, b);
+                        }
+
+                        texture.SetPixel(x, y, color);
+                    }
+                }
+
+                return texture;
+            }
         }
 
         private void CalculateButton_Click(object sender, EventArgs e)
@@ -48,7 +112,7 @@ namespace LevenshteinDistance
             {
                 matrix[i, 0] = i;
             }
-            //black magic
+            
             for (int j = 0; j <= str2.Length; j++)
             {
                 matrix[0, j] = j;
@@ -91,6 +155,15 @@ namespace LevenshteinDistance
 
             // Place Label location regarding of TextBox2
             distanceLabel.Location = new Point(secondStringTextBox.Location.X, secondStringTextBox.Location.Y + secondStringTextBox.Height + 10);
+
+
+
+            // Generate a Perlin noise texture with a width and height of 800 pixels
+            Bitmap texture = PerlinNoiseTexture.GenerateTexture(500, 400);
+
+            // Set the background image of the form to the generated texture
+            BackgroundImage = texture;
+
         }
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
@@ -167,7 +240,6 @@ namespace LevenshteinDistance
                     }
                 }
             }
-
             return operations;
         }
     }

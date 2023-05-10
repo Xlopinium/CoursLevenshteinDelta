@@ -83,7 +83,7 @@
             // panel1
             // 
             this.panel1.AutoScroll = true;
-            this.panel1.Location = new System.Drawing.Point(429, 178);
+            this.panel1.Location = new System.Drawing.Point(474, 349);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(182, 95);
             this.panel1.TabIndex = 3;
@@ -99,6 +99,7 @@
             this.Controls.Add(this.CalculateButton);
             this.Controls.Add(this.secondStringTextBox);
             this.Controls.Add(this.firstStringTextBox);
+            this.KeyPreview = true;
             this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximumSize = new System.Drawing.Size(500, 400);
             this.MinimumSize = new System.Drawing.Size(500, 400);
@@ -108,7 +109,7 @@
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
             this.ResumeLayout(false);
             this.PerformLayout();
-            this.KeyPreview = true;
+
         }
 
         #endregion
